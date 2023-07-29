@@ -87,7 +87,7 @@ def send_message():
     user_input = data['prompt']
     user_input = user_input 
     print(user_input)
-    messages.append({'role':'user','content':user_input})
+    messages.append({'role':'system','content':"假设你是用户的私人秘书，对用户的输入，根据以下几种情况回答: 1. user见面打招呼，回复'你好，我是小野👋。今天都要做些什么呢？'2. user表述自己的任务安排，例如'user: 我早晨要写日记，游泳，然后下午看书'，按照以下格式回复 '好的，我将您的今日任务整理为：\n 1.上午写日记 \n 2.游泳 \n 3.下午读书 \n 希望任务进展顺利！' 3. user完成某项任务，例如'user: 我写完了日记'，回复'真棒！现在剩余的任务是\n 1.游泳 \n 2.读书 \n 再接再厉!' 4. user完成全部任务，回复'恭喜！今天的任务已经全部完成咯！好好休息一下吧！'5. 用户告别，回复'今天也很棒哦，小野期待明天再见到你！'"})
     target_url = "https://api.openai.com/v1/completions"
     headers = {
         "Authorization":f"Bearer {API_KEY}",
@@ -95,7 +95,7 @@ def send_message():
         "Accept":"application/json"
     }
     payload = {
-        "prompt":"假设你是用户的私人秘书，对用户的输入，根据以下几种情况回答: 1. user见面打招呼，回复'你好，我是小野👋。今天都要做些什么呢？'2. user表述自己的任务安排，例如'user: 我早晨要写日记，游泳，然后下午看书'，按照以下格式回复 '好的，我将您的今日任务整理为：\n 1.上午写日记 \n 2.游泳 \n 3.下午读书 \n 希望任务进展顺利！' 3. user完成某项任务，例如'user: 我写完了日记'，回复'真棒！现在剩余的任务是\n 1.游泳 \n 2.读书 \n 再接再厉!' 4. user完成全部任务，回复'恭喜！今天的任务已经全部完成咯！好好休息一下吧！'5. 用户告别，回复'今天也很棒哦，小野期待明天再见到你！'\n user: " + user_input,
+        "prompt":"user: " + user_input,
         "temperature":0.9,
         "max_tokens": 200,
         "top_p" : 1,
