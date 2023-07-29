@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>注册-感受野</title>
+    <meta name="author" content="Scarlett Kong"/>
+    <meta name="description" content="感受野致力于提供个性化智能体陪伴服务，构建友善社群实现人与人之间的互助。">
+    <meta name="keywords" content="感受野,智能体陪伴,情感陪伴,互助社群,人与人,AI情感陪伴"> <!--提供搜索keywords-->
+    <link rel="icon" href="{{url_for('static',filename='favcion.ico')}}">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='style_login.css')}}">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-form">
+            <h1>用户注册</h1>
+            <form action="/register" method="post">
+                <div>
+                    <label for="username">用户名:</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div>
+                    <label for="password">密码:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div>
+                    <input type="submit" value="注册">
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+      document.querySelector('.login-form').addEventListener('submit', function(event){
+        event.preventDefault();
+        //获取用户名和密码
+        var username = document.querySelector('#username').value;
+        var password = document.querySelector('#password').value;
+        //创建请求的数据对象
+        var data = new URLSearchParams();
+        data.append('username', username);
+        data.append('password', password);
+        //发送POST请求给Flask的/register路由
+        fetch('/register',{
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: data
+        })
+        .then(function(response){
+          if(response.ok){
+            //登陆成功，重定向至login.html
+            window.location.href = '/login.html';
+          }else{
+          //注册失败
+          response.json().then(function(data){
+            var error_message = data.error_message;
+            alert('注册失败:'+error_message);
+          });
+        }
+      });
+    </script>
+
+</body>
+</html>

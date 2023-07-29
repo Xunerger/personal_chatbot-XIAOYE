@@ -1,0 +1,96 @@
+body {
+    background-color: #afebcfbb;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+/* 聊天容器样式 */
+.chat-container {
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: #f9f8f897;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow-y: scroll;
+    height: 70vh;
+    margin-bottom: 20px;
+}
+
+/* 每条消息的样式 */
+.message {
+    margin-bottom: 20px;
+}
+
+/* 发送者样式 */
+.sender {
+    font-weight: bold;
+}
+
+/* 消息内容样式 */
+.message-content {
+    background-color: #ffffffda;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+/* 用户消息样式 */
+.user-message {
+    text-align: right;
+}
+
+/* Bot消息样式 */
+.bot-message {
+    text-align: left;
+}
+
+/* 输入框容器样式 */
+.input-container {
+    display: flex;
+    margin-top: 20px;
+    max-width: 600px;
+    margin: 20px auto 0;
+}
+
+/* 消息输入样式 */
+.message-input {
+    flex-grow: 1;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 14px;
+}
+
+/* 发送按钮样式 */
+.send-button {
+    background-color: #4caf87bc;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+/* 发送按钮悬停样式 */
+.send-button:hover {
+    background-color: #45a049;
+}
+
+/* 隐藏滚动条 */
+.chat-container::-webkit-scrollbar {
+    display: none;
+}
+
+/* 在某些浏览器中隐藏滚动条 */
+/* 隐藏滚动条 */
+
+* {
+    scrollbar-width: none;
+}
+
+/* Webkit (Chrome, Safari) */
+*::-webkit-scrollbar {
+    display: none;
+}
+

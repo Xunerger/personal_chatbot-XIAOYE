@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>感受野</title>
+  <meta name="author" content="Scarlett Kong"/>
+  <meta name="description" content="感受野致力于提供个性化智能体陪伴服务，构建友善社群实现人与人之间的互助。">
+  <meta name="keywords" content="感受野,智能体陪伴,情感陪伴,互助社群,人与人,AI情感陪伴"> <!--提供搜索keywords-->
+  <link rel="icon" href="{{url_for('static',filename='favcion.ico')}}">
+  <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='style_chat.css')}}">
+</head>
+<body>
+  <!-- 聊天对话框容器 -->
+  <div class="chat-container" id="chat-container">
+    <!-- 用户消息 -->
+    <div class="message user-message">
+      <span class="sender">You:</span>
+      <div class="message-content">
+        最近你有没有尝试过那家新开的披萨店？听说他们的披萨口味非常特别。
+      </div>
+    </div>
+    <!-- Bot消息 -->
+    <div class="message bot-message">
+      <span class="sender">Bot:</span>
+      <div class="message-content">
+        是啊！我昨天刚去尝了一下，他们的披萨真是让人惊艳，完全颠覆了我对披萨的传统认知。
+      </div>
+    </div>
+    <!-- 继续添加更多对话 -->
+  </div>
+
+  <!--输入框容器-->
+  <div class="input-container">
+    <input type="text" class="message-input" id="input-message" placeholder="输入消息..." onkeypress="handleKeyPress(event)">
+    <button class="send-button" onclick="sendMessage()">发送</button>
+  </div>
+
+  <script src="{{url_for('static',filename='script.js')}}"></script>
+</body>
+</html>

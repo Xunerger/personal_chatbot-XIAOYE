@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>登录-感受野</title>
+    <meta name="author" content="Scarlett Kong"/>
+    <meta name="description" content="感受野致力于提供个性化智能体陪伴服务，构建友善社群实现人与人之间的互助。">
+    <meta name="keywords" content="感受野,智能体陪伴,情感陪伴,互助社群,人与人,AI情感陪伴"> <!--提供搜索keywords-->
+    <link rel="icon" href="{{url_for('static',filename='favcion.ico')}}">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='style_login.css')}}">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-form">
+            <h1>登录</h1>
+            <form id="login_form" action="/login" method="post">
+                <div>
+                    <label for="username">用户名:</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div>
+                    <label for="password">密码:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div>
+                    <input type="submit" value="登录">
+                </div>
+            </form>
+            <div class="login-links">
+                <a href="{{ url_for('register')}}">欢迎注册</a> <!-- 注册链接 -->
+                <a href="/forgot-password">忘记密码咯</a> <!-- 忘记密码链接 -->
+            </div>
+        </div>
+    </div>
+    <script>
+      document.querySelector('#login-form').addEventListener('submit', function(event){
+        event.preventDefault();
+        //获取用户名和密码
+        var username = document.querySelector('#username').value;
+        var password = document.querySelector('#password').value;
+        //创建请求的数据对象
+        var data = {
+          'username': username,
+          'password': password
+        };
+        //发送POST请求给Flask的/login路由
+        fetch('/login',{
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        })
+        .then(function(response){
+          if(response.ok){
+            //登陆成功，重定向至index.html
+            window.location.href = '/index.html';
+          }else{
+          //登陆失败，处理错误消息
+          response.json().then(function(data){
+            var error_message = data.error_message;
+            alert('登陆失败:'+error_message);
+          });
+        }
+      });
+    </script>
+<!--
+  在上述示例中，我们使用JavaScript代码在login.html中添加了一个事件监听器，监听登录表单的提交事件
+  当用户提交表单时，我们使用fetch API发送POST请求到Flask的/login路由，并将用户名和密码作为JSON数据进行发送
+  在响应处理部分，如果响应状态码为200（OK），则表示登录成功，我们通过window.location.href将用户重定向至index.html页面。
+  如果响应状态码为其他值，则表示登录失败，我们可以从响应的JSON数据中获取错误消息，并通过alert()显示给用户。
+-->
+</body>
+</html>
