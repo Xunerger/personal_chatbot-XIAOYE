@@ -9,7 +9,7 @@ import mysql.connector
 
 app = Flask(__name__, static_url_path='/static')
 CORS(app)
-API_KEY = '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'
+API_KEY = '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'
 messages = []
 
 @app.route('/')
@@ -17,38 +17,45 @@ def home():
     return render_template('login.html')
 
 #配置MySQL数据库连接：
-db = mysql.connector.connect(
-    host="localhost",
-    user='root',
-    password='123456',
-    database='chatbot'
-)
+db_config = {
+    'host':'localhost',
+    'user':'root', #本地运行，root用户
+    'password':'123456', #本地运行，本地密码
+    'database':'chatbot',
+    'connection_timeout':86400, # 设置连接超时时间（单位：秒）
+    'pool_name':'pool_name' # 设置连接池的名称
+}
 
 @app.route('/login', methods=['POST'])
 def login():
-    #获取登陆表单提交的用户名和密码
-    username = request.form.get('username')
-    password = request.form.get('password')
+    #初始化cursor变量
+    db = mysql.connector.connect(**db_config)
+    cursor = None
+    try:
+        #获取登陆表单提交的用户名和密码
+        username = request.form.get('username')
+        password = request.form.get('password')
 
-    #创建数据库游标
-    cursor = db.cursor()
+        #创建数据库游标
+        cursor = db.cursor()
 
-    #查询数据库中是否存在匹配的用户名和密码
-    query = "SELECT * FROM users WHERE username = %s"
-    cursor.execute(query, (username, ))
-    user = cursor.fetchone()
+        #查询数据库中是否存在匹配的用户名和密码
+        query = "SELECT * FROM users WHERE username = %s"
+        cursor.execute(query, (username, ))
+        user = cursor.fetchone()
 
-    #进行登录验证逻辑判断
-    if user and user[2] == password:
-        #登录验证成功，跳转到index.html页面
-        return render_template('/index.html')
-    else:
-        #如果登录验证失败，跳转到login.html页面，并且给出错误提示
-        error_message = "用户名或密码错误，请重新输入"
-        return render_template('login.html', error_message=error_message)
-    #关闭数据库游标和连接
-    cursor.close()
-    db.close()
+        #进行登录验证逻辑判断
+        if user and user[2] == password:
+            #登录验证成功，跳转到index.html页面
+            return render_template('/index.html')
+        else:
+            #如果登录验证失败，跳转到login.html页面，并且给出错误提示
+            error_message = "用户名或密码错误，请重新输入"
+            return render_template('login.html', error_message=error_message)
+    finally:
+        #关闭数据库游标和连接
+        cursor.close()
+        db.close()
 
 
 @app.route('/register', methods=['GET','POST'])
@@ -85,28 +92,25 @@ def register():
 def send_message():
     data = request.json
     user_input = data['prompt']
-    user_input = user_input 
-    print(user_input)
-    messages.append({'role':'system','content':"假设你是用户的私人秘书，对用户的输入，根据以下几种情况回答: 1. user见面打招呼，回复'你好，我是小野👋。今天都要做些什么呢？'2. user表述自己的任务安排，例如'user: 我早晨要写日记，游泳，然后下午看书'，按照以下格式回复 '好的，我将您的今日任务整理为：\n 1.上午写日记 \n 2.游泳 \n 3.下午读书 \n 希望任务进展顺利！' 3. user完成某项任务，例如'user: 我写完了日记'，回复'真棒！现在剩余的任务是\n 1.游泳 \n 2.读书 \n 再接再厉!' 4. user完成全部任务，回复'恭喜！今天的任务已经全部完成咯！好好休息一下吧！'5. 用户告别，回复'今天也很棒哦，小野期待明天再见到你！'"})
-    target_url = "https://api.openai.com/v1/completions"
+    target_url = "https://api.openai.com/v1/chat/completions"
     headers = {
         "Authorization":f"Bearer {API_KEY}",
         "Content-Type":"application/json",
         "Accept":"application/json"
     }
     payload = {
-        "prompt":"user: " + user_input,
+        "messages" : [{'role':'system','content':"假设你是用户的私人秘书，对用户的输入，根据以下几种情况回答: 1. user见面打招呼，回复'你好，我是小野👋。今天都要做些什么呢？'2. user表述自己的任务安排，例如'user: 我早晨要写日记，游泳，然后下午看书'，按照以下格式回复 '好的，我将您的今日任务整理为：\n 1.上午写日记 \n 2.游泳 \n 3.下午读书 \n 希望任务进展顺利！' 3. user完成某项任务，例如'user: 我写完了日记'，回复'真棒！现在剩余的任务是\n 1.游泳 \n 2.读书 \n 再接再厉!' 4. user完成全部任务，回复'恭喜！今天的任务已经全部完成咯！好好休息一下吧！'5. 用户告别，回复'今天也很棒哦，小野期待明天再见到你！'"},
+                      {'role':'user','content':user_input}],
         "temperature":0.9,
         "max_tokens": 200,
         "top_p" : 1,
         "frequency_penalty" : 0,
         "presence_penalty" : 0.6,
-        "model": "text-davinci-003", 
-        "stop": "user: "   
+        "model": "gpt-3.5-turbo",   
     }
     response = requests.post(target_url, headers=headers, json=payload)
     print(response.json()) 
-    text_bot = response.json()['choices'][0]['text']
+    text_bot = response.json()['choices'][0]['message']['content']
     return jsonify({'text_bot': text_bot})
 
 
