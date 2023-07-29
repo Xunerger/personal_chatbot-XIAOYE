@@ -9,7 +9,7 @@ import mysql.connector
 
 app = Flask(__name__, static_url_path='/static')
 CORS(app)
-API_KEY = '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'
+
 messages = []
 
 @app.route('/')
