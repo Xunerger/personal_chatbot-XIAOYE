@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*-coding:utf-8 -*-
 from flask import Flask, request, render_template,jsonify, redirect
 from flask_cors import CORS
 from werkzeug.middleware.proxy_fix import ProxyFix
@@ -7,7 +9,7 @@ import mysql.connector
 
 app = Flask(__name__, static_url_path='/static')
 CORS(app)
-API_KEY = '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'
+API_KEY = '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'
 messages = []
 
 @app.route('/')
@@ -83,7 +85,7 @@ def register():
 def send_message():
     data = request.json
     user_input = data['prompt']
-    user_input = user_input +"The end"
+    user_input = user_input 
     print(user_input)
     messages.append({'role':'user','content':user_input})
     target_url = "https://api.openai.com/v1/completions"
@@ -92,12 +94,15 @@ def send_message():
         "Content-Type":"application/json",
         "Accept":"application/json"
     }
-    stop_sequences = ["\n\n","The end"]
     payload = {
-        "prompt":user_input,
-        "max_tokens": 1024,
-        "model": "davinci:ft-personal-2023-07-24-15-56-32", 
-        "stop": stop_sequences    
+        "prompt":"假设你是用户的私人秘书，对用户的输入，根据以下几种情况回答: 1. user见面打招呼，回复'你好，我是小野👋。今天都要做些什么呢？'2. user表述自己的任务安排，例如'user: 我早晨要写日记，游泳，然后下午看书'，按照以下格式回复 '好的，我将您的今日任务整理为：\n 1.上午写日记 \n 2.游泳 \n 3.下午读书 \n 希望任务进展顺利！' 3. user完成某项任务，例如'user: 我写完了日记'，回复'真棒！现在剩余的任务是\n 1.游泳 \n 2.读书 \n 再接再厉!' 4. user完成全部任务，回复'恭喜！今天的任务已经全部完成咯！好好休息一下吧！'5. 用户告别，回复'今天也很棒哦，小野期待明天再见到你！'\n user: " + user_input,
+        "temperature":0.9,
+        "max_tokens": 200,
+        "top_p" : 1,
+        "frequency_penalty" : 0,
+        "presence_penalty" : 0.6,
+        "model": "text-davinci-003", 
+        "stop": "user: "   
     }
     response = requests.post(target_url, headers=headers, json=payload)
     print(response.json()) 
